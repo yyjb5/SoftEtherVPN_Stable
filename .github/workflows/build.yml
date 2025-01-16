@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    runs-on: centos-7
+    runs-on: ubuntu-latest
 
     steps:
     - name: Check out repository
@@ -17,14 +17,15 @@ jobs:
 
     - name: Install dependencies
       run: |
-        sudo yum update -y
-        sudo yum groupinstall -y "Development Tools"
-        sudo yum install -y readline-devel openssl-devel zlib-devel
-
+        sudo apt-get update
+        sudo apt-get install -y build-essential libreadline-dev libssl-dev zlib1g-dev
+    - name: Install musl-tools
+      run: sudo apt-get update && sudo apt-get install -y musl-tools
+      
     - name: Build SoftEther VPN
       run: |
         ./configure
-        make
+        CC=musl-gcc make
 
     - name: List build directory
       run: ls -alh
